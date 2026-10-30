@@ -1,0 +1,17 @@
+# Render blueprint for the Vectra KB-only RAG assistant.
+# Deploys the FastAPI app + web UI as a Docker web service on Render's free tier.
+# The vector database is NOT defined here: use a free Neon Postgres (pgvector)
+# and set DATABASE_URL + OPENAI_API_KEY in the Render dashboard (see DEPLOY.md).
+services:
+  - type: web
+    name: vectra-rag-assistant
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      # Set these in the Render dashboard (do NOT commit real values):
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
