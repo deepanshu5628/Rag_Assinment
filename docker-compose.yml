@@ -1,0 +1,23 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: vectra-rag-pgvector
+    environment:
+      POSTGRES_DB: ragdb
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: rag
+    ports:
+      # host 5433 -> container 5432 (connection string uses 5433)
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Ensures the pgvector extension exists even before the app runs.
+      - ./docker/init-vector.sql:/docker-entrypoint-initdb.d/init-vector.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag -d ragdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:

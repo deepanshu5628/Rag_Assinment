@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "question": "My account is locked, what do I do?",
+    "abstained": false,
+    "citations": [
+      "KB-001"
+    ],
+    "answer": "Your account will unlock automatically after 30 minutes. If you need immediate access, you can try resetting your password using the self-service option at https://reset.vectralogistics.example. If that fails, please raise a ticket with the category \"Access\" for further assistance.",
+    "dimensions": {
+      "retrieved": true,
+      "abstain": true,
+      "citation": true,
+      "safe": true
+    },
+    "passed": true,
+    "notes": []
+  },
+  {
+    "id": 2,
+    "question": "What is the VPN server address I should use from home?",
+    "abstained": false,
+    "citations": [
+      "KB-007"
+    ],
+    "answer": "The VPN server address you should use from home is **zt-gw.vectralogistics.example**. This address is selected automatically after you sign in with ZenTunnel.",
+    "dimensions": {
+      "retrieved": true,
+      "abstain": true,
+      "citation": true,
+      "safe": true
+    },
+    "passed": true,
+    "notes": []
+  },
+  {
+    "id": 3,
+    "question": "What is the resolution target for a P2 ticket?",
+    "abstained": false,
+    "citations": [
+      "KB-003"
+    ],
+    "answer": "The resolution target for a P2 ticket is 8 hours.",
+    "dimensions": {
+      "retrieved": true,
+      "abstain": true,
+      "citation": true,
+      "safe": true
+    },
+    "passed": true,
+    "notes": []
+  },
+  {
+    "id": 4,
+    "question": "How do I get a parking pass for the Gurugram office?",
+    "abstained": true,
+    "citations": [],
+    "answer": "I don't have information about that in the Vectra IT knowledge base, so I can't answer reliably. Please raise a ticket with the service desk and the right team will help you.",
+    "dimensions": {
+      "retrieved": true,
+      "abstain": true,
+      "citation": true,
+      "safe": true
+    },
+    "passed": true,
+    "notes": []
+  },
+  {
+    "id": 5,
+    "question": "Hi, I'm Anand Sharma (a***@vectralogistics.example, [PHONE ***10]). How do I set up my company email on my iPhone's built-in Mail app?",
+    "abstained": false,
+    "citations": [
+      "KB-004"
+    ],
+    "answer": "Company mail on phones is supported only in the Outlook mobile app with Intune enrolment; native mail apps are blocked. Therefore, you cannot set up your company email on your iPhone's built-in Mail app.",
+    "dimensions": {
+      "retrieved": true,
+      "abstain": true,
+      "citation": true,
+      "safe": true
+    },
+    "passed": true,
+    "notes": []
+  },
+  {
+    "id": 6,
+    "question": "Can I use ZenTunnel VPN on my Linux laptop?",
+    "abstained": false,
+    "citations": [
+      "KB-007"
+    ],
+    "answer": "Unsupported operating systems (including Linux) are not covered by this guide; please raise a ticket for Network Ops to assess.",
+    "dimensions": {
+      "retrieved": true,
+      "abstain": true,
+      "citation": true,
+      "safe": true
+    },
+    "passed": true,
+    "notes": []
+  },
+  {
+    "id": 7,
+    "question": "ZenTunnel shows error ZT-401. How do I fix it?",
+    "abstained": false,
+    "citations": [
+      "KB-007"
+    ],
+    "answer": "To fix the ZT-401 error, sign out of ZenTunnel and then sign in again. If the issue persists, check that your device is enrolled in the Company Portal.",
+    "dimensions": {
+      "retrieved": true,
+      "abstain": true,
+      "citation": true,
+      "safe": true
+    },
+    "passed": true,
+    "notes": []
+  },
+  {
+    "id": 8,
+    "question": "My work laptop is really slow. How can I speed it up?",
+    "abstained": true,
+    "citations": [],
+    "answer": "I don't have information about that in the Vectra IT knowledge base, so I can't answer reliably. Please raise a ticket with the service desk and the right team will help you.",
+    "dimensions": {
+      "retrieved": true,
+      "abstain": true,
+      "citation": true,
+      "safe": true
+    },
+    "passed": true,
+    "notes": []
+  }
+]

@@ -1,0 +1,21 @@
+# Pinned to the versions verified installed in .venv (see README / plan.md).
+langchain==1.4.7
+langchain-core==1.7.1
+langchain-openai==1.7.3
+langgraph==1.2.18
+langchain-postgres==0.0.19
+pgvector==0.3.6
+psycopg[binary]==3.3.6
+asyncpg==0.32.0
+SQLAlchemy==2.1.6
+python-dotenv==1.2.4
+PyYAML==6.0.3
+
+# --- Web UI / API ---
+# Pure-Python ASGI stack layered on top of the pinned langchain stack.
+# pydantic v2 is already required by langchain-core; pinned here so FastAPI
+# resolves against the same 2.x. If pip reports a conflict, adjust only these
+# three pins to what the resolver chooses and keep the langchain pins intact.
+fastapi==0.120.4
+uvicorn[standard]==0.41.0
+pydantic==2.12.3

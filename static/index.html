@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vectra IT Assistant (KB-only)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+      --accent-ink: #ffffff;
+      --amber-bg: #fef3c7;
+      --amber-border: #f59e0b;
+      --amber-ink: #92400e;
+      --red-bg: #fee2e2;
+      --red-border: #ef4444;
+      --red-ink: #991b1b;
+      --badge-bg: #eff6ff;
+      --badge-border: #bfdbfe;
+      --badge-ink: #1d4ed8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+    header h1 {
+      font-size: 1.6rem;
+      margin: 0 0 4px;
+    }
+    header p {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 84px;
+      resize: vertical;
+      padding: 12px 14px;
+      font-size: 1rem;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      color: var(--ink);
+    }
+    textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .hint { color: var(--muted); font-size: 0.8rem; }
+    button.ask {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border: none;
+      border-radius: 10px;
+      padding: 11px 22px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button.ask:hover { background: #1d4ed8; }
+    button.ask:disabled { opacity: 0.6; cursor: not-allowed; }
+    .chips { margin: 20px 0 4px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 13px;
+      font-size: 0.82rem;
+      color: #334155;
+      cursor: pointer;
+      line-height: 1.2;
+    }
+    .chip:hover { background: #e2e8f0; }
+    .chips-label { font-size: 0.8rem; color: var(--muted); margin: 24px 0 2px; }
+    #result { margin-top: 22px; }
+    .answer {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      white-space: pre-wrap;
+      line-height: 1.55;
+    }
+    .citations { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .citations .lbl { font-size: 0.8rem; color: var(--muted); margin-right: 2px; }
+    .badge {
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: var(--badge-ink);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .banner {
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .banner.abstain { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber-ink); }
+    .banner.error { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red-ink); }
+    .loading { display: flex; align-items: center; gap: 10px; color: var(--muted); padding: 8px 2px; }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    footer { margin-top: 28px; color: var(--muted); font-size: 0.8rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Vectra IT Assistant (KB-only)</h1>
+      <p>Answers come only from the Vectra IT knowledge base, with citations. If the KB doesn't cover it, you'll be asked to raise a ticket.</p>
+    </header>
+
+    <div class="card">
+      <label for="question">Ask a question</label>
+      <textarea id="question" placeholder="e.g. What VPN server address should I use when working from home?"></textarea>
+      <div class="row">
+        <span class="hint">Press Enter to ask · Shift+Enter for a new line</span>
+        <button class="ask" id="askBtn" type="button">Ask</button>
+      </div>
+    </div>
+
+    <div class="chips-label">Try an example</div>
+    <div class="chips" id="chips"></div>
+
+    <div id="result" aria-live="polite"></div>
+
+    <footer>KB-only · cites the articles it uses · abstains when unsure</footer>
+  </div>
+
+  <script>
+    var EXAMPLES = [
+      "My account got locked. How long until it unlocks by itself?",
+      "What VPN server address should I use when working from home?",
+      "What is the resolution target for a P2 ticket?",
+      "How do I get a parking pass for the Gurugram office?",
+      "Does ZenTunnel work on Linux?",
+      "ZenTunnel shows ZT-401, what do I do?"
+    ];
+
+    var questionEl = document.getElementById("question");
+    var askBtn = document.getElementById("askBtn");
+    var resultEl = document.getElementById("result");
+    var chipsEl = document.getElementById("chips");
+
+    EXAMPLES.forEach(function (text) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.textContent = text;
+      chip.addEventListener("click", function () {
+        questionEl.value = text;
+        ask();
+      });
+      chipsEl.appendChild(chip);
+    });
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function setLoading() {
+      resultEl.innerHTML =
+        '<div class="loading"><span class="spinner"></span>Searching the knowledge base…</div>';
+    }
+
+    function showError(message) {
+      resultEl.innerHTML =
+        '<div class="banner error">⚠️ ' + escapeHtml(message) + "</div>";
+    }
+
+    function render(data) {
+      var html = "";
+      if (data.abstained) {
+        html +=
+          '<div class="banner abstain">⚠️ No KB match — raise a ticket</div>';
+      }
+      html += '<div class="answer" style="margin-top:' + (data.abstained ? "12px" : "0") + '">' +
+        escapeHtml(data.answer || "") + "</div>";
+
+      var citations = Array.isArray(data.citations) ? data.citations : [];
+      if (citations.length > 0) {
+        html += '<div class="citations"><span class="lbl">Sources:</span>';
+        citations.forEach(function (c) {
+          html += '<span class="badge">' + escapeHtml(c) + "</span>";
+        });
+        html += "</div>";
+      }
+      resultEl.innerHTML = html;
+    }
+
+    function ask() {
+      var question = questionEl.value.trim();
+      if (!question) {
+        showError("Please type a question first.");
+        return;
+      }
+      askBtn.disabled = true;
+      setLoading();
+
+      fetch("/answer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: question })
+      })
+        .then(function (resp) {
+          return resp
+            .json()
+            .catch(function () {
+              return {};
+            })
+            .then(function (body) {
+              return { ok: resp.ok, status: resp.status, body: body };
+            });
+        })
+        .then(function (r) {
+          if (!r.ok) {
+            var msg =
+              (r.body && r.body.error) ||
+              (r.body && r.body.detail && "Please enter a valid question.") ||
+              "Request failed (HTTP " + r.status + ").";
+            showError(msg);
+            return;
+          }
+          render(r.body);
+        })
+        .catch(function () {
+          showError("Could not reach the server. Is the API running?");
+        })
+        .finally(function () {
+          askBtn.disabled = false;
+        });
+    }
+
+    askBtn.addEventListener("click", ask);
+    questionEl.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        ask();
+      }
+    });
+  </script>
+</body>
+</html>
