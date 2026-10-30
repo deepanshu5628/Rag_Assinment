@@ -110,6 +110,13 @@ async def post_answer(request: AskRequest):
 
 
 if __name__ == "__main__":
-    host = os.getenv("API_HOST", "127.0.0.1")
-    port = int(os.getenv("API_PORT", "8000"))
+    # Host/port resolution works both locally and on PaaS hosts (Railway,
+    # Render, etc.). Those platforms inject the public port as $PORT and expect
+    # the server to bind 0.0.0.0. Precedence:
+    #   port: $PORT (platform) -> $API_PORT (local override) -> 8000
+    #   host: $API_HOST if set -> 0.0.0.0 when $PORT is present (deployed)
+    #         -> 127.0.0.1 locally (safer default for a dev machine)
+    port = int(os.getenv("PORT") or os.getenv("API_PORT") or "8000")
+    default_host = "0.0.0.0" if os.getenv("PORT") else "127.0.0.1"
+    host = os.getenv("API_HOST", default_host)
     uvicorn.run("api:app", host=host, port=port)

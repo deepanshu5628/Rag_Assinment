@@ -1,0 +1,16 @@
+# Keep the image small and never ship secrets or local-only artifacts.
+.env
+.venv/
+__pycache__/
+*.pyc
+*.log
+.git/
+.gitignore
+.agents/
+.pytest_cache/
+tests/
+docker-compose.yml
+docker/
+*.md
+!README.md
+AI Engineer Question.docx

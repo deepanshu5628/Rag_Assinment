@@ -38,11 +38,32 @@ load_dotenv()
 
 # --- Configuration (env with sensible defaults) -----------------------------
 KB_DIR = Path(__file__).parent / "vectra_kb_articles" / "kb"
+
+
+def _normalize_db_url(url: str) -> str:
+    """Coerce any standard Postgres URL to the async (asyncpg) driver form.
+
+    Managed providers (Railway, Neon, Supabase, Render) hand out a plain
+    ``postgres://`` / ``postgresql://`` DSN. PGEngine needs an async SQLAlchemy
+    driver URL; asyncpg is used (not psycopg3-async) because on Windows
+    PGEngine's background event loop is a ProactorEventLoop that psycopg3's
+    async mode rejects while asyncpg works on either. This lets you paste a
+    provider's connection string verbatim into DATABASE_URL.
+    """
+    if url.startswith("postgres://"):
+        url = "postgresql://" + url[len("postgres://"):]
+    if url.startswith("postgresql://"):
+        url = "postgresql+asyncpg://" + url[len("postgresql://"):]
+    if "+asyncpg://" in url and "?" in url:
+        url = url.split("?", 1)[0]
+    return url
+
+
 # Async driver URL. We use asyncpg (not psycopg3-async) because on Windows the
 # default asyncio ProactorEventLoop that PGEngine's background thread runs is
 # not compatible with psycopg3's async mode; asyncpg works on either loop.
-DATABASE_URL = os.getenv(
-    "DATABASE_URL", "postgresql+asyncpg://rag:rag@localhost:5433/ragdb"
+DATABASE_URL = _normalize_db_url(
+    os.getenv("DATABASE_URL", "postgresql+asyncpg://rag:rag@localhost:5433/ragdb")
 )
 TABLE_NAME = os.getenv("TABLE_NAME", "kb_chunks")
 EMBEDDING_MODEL = "text-embedding-3-small"

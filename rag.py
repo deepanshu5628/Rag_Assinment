@@ -28,9 +28,6 @@ Safety posture (goes live to 3,000 staff)
   overridden to a safe abstain).
 """
 
-
-
-
 from __future__ import annotations
 
 import os
@@ -52,11 +49,32 @@ from pii import mask_pii
 load_dotenv()
 
 # --- Configuration -----------------------------------------------------------
+def _normalize_db_url(url: str) -> str:
+    """Coerce any standard Postgres URL to the async (asyncpg) driver form.
+
+    Managed Postgres providers (Railway, Neon, Supabase, Render) hand out a
+    plain ``postgres://`` or ``postgresql://`` DSN. PGEngine needs an async
+    SQLAlchemy driver URL; asyncpg is used (not psycopg3-async) because on
+    Windows PGEngine's background event loop is a ProactorEventLoop, which
+    psycopg3's async mode rejects while asyncpg works on either loop. This lets
+    you paste a provider's connection string verbatim into DATABASE_URL.
+    """
+    if url.startswith("postgres://"):
+        url = "postgresql://" + url[len("postgres://"):]
+    if url.startswith("postgresql://"):
+        url = "postgresql+asyncpg://" + url[len("postgresql://"):]
+    # Strip a libpq ``?sslmode=...`` query that asyncpg does not accept as a URL
+    # param (asyncpg negotiates SSL automatically for managed providers).
+    if "+asyncpg://" in url and "?" in url:
+        url = url.split("?", 1)[0]
+    return url
+
+
 # Async driver URL. asyncpg is used (not psycopg3-async) because PGEngine runs
 # its background event loop as a Windows ProactorEventLoop, which psycopg3's
 # async mode rejects; asyncpg is compatible with either loop.
-DATABASE_URL = os.getenv(
-    "DATABASE_URL", "postgresql+asyncpg://rag:rag@localhost:5433/ragdb"
+DATABASE_URL = _normalize_db_url(
+    os.getenv("DATABASE_URL", "postgresql+asyncpg://rag:rag@localhost:5433/ragdb")
 )
 TABLE_NAME = os.getenv("TABLE_NAME", "kb_chunks")
 TOP_K = int(os.getenv("TOP_K", "4"))
